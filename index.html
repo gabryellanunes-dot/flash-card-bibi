@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copa da Segurança Digital - Guia de Defesa para a Melhor Idade</title>
+  <style>
+    /* RESET E VARIÁVEIS DE ESTILO - PALETA INSPIRADA NA COPA DO MUNDO */
+    :root {
+      --primary-green: #005A32;
+      --primary-gold: #F7C844;
+      --accent-blue: #002776;
+      --pitch-green: #0F8043;
+      --text-dark: #1F2937;
+      --bg-light: #F3FBF6;
+      --card-white: #FFFFFF;
+      --red-card: #E53E3E;
+      --yellow-card: #ECC94B;
+      --green-card: #38A169;
+      
+      /* Base de acessibilidade - Tamanho de fonte padrão robusto para idosos */
+      --base-font-size: 20px;
+      --spacing-unit: 1rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.6;
+      padding-bottom: 50px;
+    }
+
+    /* CONTROLES DE ACESSIBILIDADE - REDIMENSIONADOR DE TEXTO (PURO CSS) */
+    /* Ocultamos os inputs de rádio, usando-os apenas para gerenciar o estado da fonte globalmente */
+    .font-control-input {
+      position: absolute;
+      opacity: 0;
+      z-index: -1;
+    }
+
+    /* Modificadores de tamanho de fonte baseados no rádio selecionado */
+    #font-normal:checked ~ .app-wrapper {
+      --base-font-size: 20px;
+    }
+    #font-large:checked ~ .app-wrapper {
+      --base-font-size: 24px;
+    }
+    #font-extra:checked ~ .app-wrapper {
+      --base-font-size: 28px;
+    }
+
+    /* ESTRUTURA GERAL DA APLICAÇÃO */
+    .app-wrapper {
+      font-size: var(--base-font-size);
+      transition: font-size 0.2s ease-in-out;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    /* BARRA DE ACESSIBILIDADE FIXA */
+    .accessibility-bar {
+      background-color: var(--accent-blue);
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      text-align: center;
+      border-bottom: 4px solid var(--primary-gold);
+    }
+
+    .accessibility-bar p {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-font {
+      background-color: var(--card-white);
+      color: var(--accent-blue);
+      border: 3px solid var(--primary-gold);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn-font:hover {
+      background-color: var(--primary-gold);
+      color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+
+    /* Estilos ativos baseados em qual rádio está selecionado */
+    #font-normal:checked ~ .app-wrapper .btn-normal,
+    #font-large:checked ~ .app-wrapper .btn-large,
+    #font-extra:checked ~ .app-wrapper .btn-extra {
+      background-color: var(--primary-gold);
+      color: var(--accent-blue);
+      outline: 4px solid var(--card-white);
+    }
+
+    /* CABEÇALHO COM TEMA DA COPA */
+    .hero-header {
+      background: linear-gradient(135deg, var(--primary-green) 0%, var(--pitch-green) 100%);
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      border: 5px solid var(--primary-gold);
+      margin-bottom: 30px;
+    }
+
+    /* Linhas do campo de futebol decorativas no fundo */
+    .hero-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border: 3px solid rgba(255,255,255,0.15);
+      margin: 15px;
+      pointer-events: none;
+      border-radius: 12px;
+    }
+
+    .hero-header::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .mascot-icon {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite ease-in-out;
+      display: inline-block;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .hero-header h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      margin-bottom: 10px;
+    }
+
+    .hero-header h1 span {
+      color: var(--primary-gold);
+    }
+
+    .hero-header p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+      font-weight: 500;
+    }
+
+    /* PLACAR DO DIA: INTRODUÇÃO AMISTOSA */
+    .scoreboard {
+      background-color: var(--card-white);
+      border: 4px solid var(--primary-green);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .scoreboard-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      color: var(--pitch-green);
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .score-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .team-box {
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .score-numbers {
+      background-color: #111;
+      color: #39FF14; /* Verde neon digital */
+      font-family: monospace, sans-serif;
+      font-size: 1.8rem;
+      padding: 5px 15px;
+      border-radius: 8px;
+      letter-spacing: 4px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    /* SEÇÃO DAS TÁTICAS DE DEFESA (DICAS DIGITAIS) */
+    .section-title {
+      text-align: center;
+      color: var(--accent-blue);
+      font-size: 1.6rem;
+      font-weight: 900;
+      margin: 40px 0 20px;
+      text-transform: uppercase;
+      border-bottom: 4px solid var(--primary-gold);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* CARDS DE DICAS - UTILIZANDO <details> E <summary> PARA ACESSIBILIDADE NATIVA */
+    .tactic-card {
+      background-color: var(--card-white);
+      border-radius: 16px;
+      margin-bottom: 15px;
+      border: 3px solid #E2E8F0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .tactic-card:focus-within, .tactic-card:hover {
+      border-color: var(--primary-green);
+      transform: translateY(-2px);
+    }
+
+    /* Estilização do Summary (Cabeçalho do Card clicável) */
+    summary {
+      padding: 22px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      cursor: pointer;
+      list-style: none; /* Remove seta padrão */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      outline: none;
+      color: var(--accent-blue);
+      background-color: #FAFAFA;
+    }
+
+    summary::-webkit-details-marker {
+      display: none; /* Remove seta no Safari */
+    }
+
+    /* Foco acessível por teclado */
+    summary:focus-visible {
+      background-color: #EDFDF2;
+      outline: 4px solid var(--primary-gold);
+    }
+
+    .summary-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .card-badge {
+      background-color: var(--primary-gold);
+      color: var(--accent-blue);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 900;
+      flex-shrink: 0;
+      border: 2px solid var(--accent-blue);
+    }
+
+    /* Ícone de seta personalizada */
+    .arrow-icon {
+      font-size: 1.5rem;
+      transition: transform 0.3s;
+      color: var(--pitch-green);
+      font-weight: bold;
+    }
+
+    /* Quando o detalhes está aberto */
+    details[open] summary {
+      background-color: #EBF8F1;
+      border-bottom: 3px solid var(--primary-green);
+    }
+
+    details[open] .arrow-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Conteúdo interno da dica */
+    .tactic-content {
+      padding: 25px;
+      background-color: var(--card-white);
+      border-top: 1px solid #EDF2F7;
+    }
+
+    /* Instrução Visual de "Cartão Vermelho" (O que NÃO fazer) e "Golaço" (O que fazer) */
+    .soccer-rule-box {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    @media (min-width: 600px) {
+      .soccer-rule-box {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .rule-card {
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+
+    .rule-danger {
+      background-color: #FFF5F5;
+      border-left: 6px solid var(--red-card);
+    }
+
+    .rule-danger h4 {
+      color: var(--red-card);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rule-safe {
+      background-color: #F0FFF4;
+      border-left: 6px solid var(--green-card);
+    }
+
+    .rule-safe h4 {
+      color: var(--green-card);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* JOGO TREINO: QUIZ DE SEGURANÇA (INTERATIVO COM PURO CSS) */
+    .quiz-container {
+      background-color: var(--card-white);
+      border: 4px dashed var(--accent-blue);
+      border-radius: 20px;
+      padding: 25px;
+      margin-top: 40px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .quiz-question {
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--accent-blue);
+      padding: 15px;
+      background-color: #F7FAFC;
+      border-radius: 12px;
+      border: 2px solid #E2E8F0;
+    }
+
+    /* Escondendo os rádios do quiz */
+    .quiz-radio {
+      position: absolute;
+      opacity: 0;
+      z-index: -1;
+    }
+
+    /* Botões/Labels das Opções de Resposta */
+    .quiz-label {
+      display: block;
+      padding: 18px 20px;
+      background-color: var(--card-white);
+      border: 3px solid #E2E8F0;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .quiz-label:hover {
+      background-color: #F7FAFC;
+      border-color: var(--accent-blue);
+    }
+
+    /* Teclado e Foco Acessível */
+    .quiz-radio:focus-visible + .quiz-label {
+      outline: 4px solid var(--primary-gold);
+      border-color: var(--accent-blue);
+    }
+
+    /* FEEDBACKS DO QUIZ (Escondidos por padrão, revelados via CSS dependendo da opção marcada) */
+    .quiz-feedback {
+      display: none;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-weight: bold;
+      border: 3px solid;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Seletor CSS inteligente para mostrar a resposta correta/incorreta baseada no ID */
+    #q1-wrong1:checked ~ .quiz-label[for="q1-wrong1"] {
+      border-color: var(--red-card);
+      background-color: #FFF5F5;
+    }
+    #q1-wrong1:checked ~ .feedback-wrong-1 {
+      display: block;
+      background-color: #FFF5F5;
+      color: #9B2C2C;
+      border-color: var(--red-card);
+    }
+
+    #q1-wrong2:checked ~ .quiz-label[for="q1-wrong2"] {
+      border-color: var(--red-card);
+      background-color: #FFF5F5;
+    }
+    #q1-wrong2:checked ~ .feedback-wrong-2 {
+      display: block;
+      background-color: #FFF5F5;
+      color: #9B2C2C;
+      border-color: var(--red-card);
+    }
+
+    #q1-correct:checked ~ .quiz-label[for="q1-correct"] {
+      border-color: var(--green-card);
+      background-color: #F0FFF4;
+    }
+    #q1-correct:checked ~ .feedback-correct {
+      display: block;
+      background-color: #F0FFF4;
+      color: #22543D;
+      border-color: var(--green-card);
+    }
+
+    /* CARTÃO AMRELO / AJUDA RÁPIDA */
+    .quick-support {
+      background-color: #FEFCBF; /* Amarelo claro */
+      border: 4px solid var(--yellow-card);
+      border-radius: 16px;
+      padding: 25px;
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .support-icon {
+      font-size: 3rem;
+      line-height: 1;
+    }
+
+    .support-text h3 {
+      color: #744210;
+      margin-bottom: 8px;
+      font-weight: 900;
+    }
+
+    /* FOOTER */
+    .footer-app {
+      text-align: center;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 3px solid #E2E8F0;
+      font-size: 0.9rem;
+      color: #718096;
+    }
+
+    .footer-app strong {
+      color: var(--primary-green);
+    }
+
+    /* CLASSES AUXILIARES DE SUPORTE VISUAL (Acessibilidade de contraste de ícones) */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- INPUTS DE CONTROLE DO TAMANHO DA FONTE (Acessibilidade) -->
+  <input type="radio" id="font-normal" name="global-font-size" class="font-control-input" checked aria-hidden="true">
+  <input type="radio" id="font-large" name="global-font-size" class="font-control-input" aria-hidden="true">
+  <input type="radio" id="font-extra" name="global-font-size" class="font-control-input" aria-hidden="true">
+
+  <!-- ENVELOPE DO APLICATIVO -->
+  <div class="app-wrapper">
+
+    <!-- BARRA FIXA DE CONTROLE DE TAMANHO DE FONTE -->
+    <nav class="accessibility-bar" aria-label="Controle de Acessibilidade">
+      <p>Ajuste o tamanho das letras para ler confortavelmente:</p>
+      <div class="btn-group">
+        <label for="font-normal" class="btn-font btn-normal" role="button" tabindex="0">
+          🔍 Letra Normal (A)
+        </label>
+        <label for="font-large" class="btn-font btn-large" role="button" tabindex="0">
+          🔍 Letra Grande (A+)
+        </label>
+        <label for="font-extra" class="btn-font btn-extra" role="button" tabindex="0">
+          🔍 Letra Gigante (A++)
+        </label>
+      </div>
+    </nav>
+
+    <!-- CABEÇALHO HERO -->
+    <header class="hero-header">
+      <div class="mascot-icon" aria-hidden="true">🏆⚽</div>
+      <h1>Copa da <span>Segurança Digital</span></h1>
+      <p>Seja o capitão da sua própria defesa na internet! Aprenda dicas simples e proteja seus dados de goleadas indesejadas.</p>
+    </header>
+
+    <!-- PLACAR DO JOGO -->
+    <section class="scoreboard" aria-label="Placar do Dia">
+      <h2 class="scoreboard-title">Partida de Hoje</h2>
+      <div class="score-display">
+        <div class="team-box" style="color: var(--primary-green);">Idosos Seguros 🇧🇷</div>
+        <div class="score-numbers">3</div>
+        <div class="score-numbers" style="background-color: #222; color: #ff3333;">0</div>
+        <div class="team-box" style="color: var(--red-card);">Golpistas e Fraudes 🚫</div>
+      </div>
+      <p><strong>A nossa zaga está imbatível!</strong> Toque nas dicas abaixo para reforçar sua defesa.</p>
+    </section>
+
+    <!-- SEÇÃO DAS DICAS (SANFONA / ACORDEÃO NATAL) -->
+    <section aria-label="Táticas de Defesa Digital">
+      <h2 class="section-title">
+        <span>🛡️</span> Esquadrão da Defesa (Nossas Dicas)
+      </h2>
+      <p style="text-align: center; margin-bottom: 20px; font-weight: bold; color: #4A5568;">
+        👇 Clique nos cartões para abrir as orientações completas:
+      </p>
+
+      <!-- DICA 1 -->
+      <article class="tactic-card">
+        <details>
+          <summary>
+            <div class="summary-left">
+              <span class="card-badge" aria-hidden="true">1</span>
+              <span>WhatsApp Seguro como Goleiro</span>
+            </div>
+            <span class="arrow-icon" aria-hidden="true">▼</span>
+          </summary>
+          <div class="tactic-content">
+            <p>Assim como um bom goleiro impede que a bola entre nas redes, você precisa fechar as portas do seu WhatsApp contra invasores. Ativar a "Confirmação em Duas Etapas" cria uma senha secreta que só você sabe.</p>
+            
+            <div class="soccer-rule-box">
+              <div class="rule-card rule-danger">
+                <h4>🟥 Cartão Vermelho (Evite!)</h4>
+                <p>Nunca envie nenhum código de números que chegar por mensagem SMS para ninguém, mesmo que digam ser de um banco ou da própria equipe do aplicativo.</p>
+              </div>
+              <div class="rule-card rule-safe">
+                <h4>🏆 Golaço (Faça isso!)</h4>
+                <p>Abra seu WhatsApp, vá em: <strong>Configurações &gt; Conta &gt; Confirmação em Duas Etapas</strong> e crie uma senha numérica de 6 dígitos que você lembre facilmente.</p>
+              </div>
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- DICA 2 -->
+      <article class="tactic-card">
+        <details>
+          <summary>
+            <div class="summary-left">
+              <span class="card-badge" aria-hidden="true">2</span>
+              <span>O "VAR" para Notícias e Parentes</span>
+            </div>
+            <span class="arrow-icon" aria-hidden="true">▼</span>
+          </summary>
+          <div class="tactic-content">
+            <p>No futebol moderno, o árbitro de vídeo (VAR) é consultado para verificar se um lance foi gol ou impedimento. Na internet, use a mesma regra: sempre cheque se uma mensagem urgente pedindo dinheiro é real.</p>
+            
+            <div class="soccer-rule-box">
+              <div class="rule-card rule-danger">
+                <h4>🟥 Cartão Vermelho (Evite!)</h4>
+                <p>Não transfira valores imediatamente se um suposto parente mandar mensagem de um número novo com a foto dele dizendo que precisa pagar algo urgente.</p>
+              </div>
+              <div class="rule-card rule-safe">
+                <h4>🏆 Golaço (Faça isso!)</h4>
+                <p>Ligue por chamada de voz ou de vídeo convencional para o número original e antigo desse parente para confirmar. Fale de viva-voz com ele antes de qualquer depósito.</p>
+              </div>
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- DICA 3 -->
+      <article class="tactic-card">
+        <details>
+          <summary>
+            <div class="summary-left">
+              <span class="card-badge" aria-hidden="true">3</span>
+              <span>Drible o Link Falso de Prêmios</span>
+            </div>
+            <span class="arrow-icon" aria-hidden="true">▼</span>
+          </summary>
+          <div class="tactic-content">
+            <p>Durante a época de Copa do Mundo, muitos golpistas mandam mensagens dizendo que você ganhou ingressos gratuitos, camisetas da seleção ou prêmios em dinheiro. Eles usam sites falsos para capturar seus dados.</p>
+            
+            <div class="soccer-rule-box">
+              <div class="rule-card rule-danger">
+                <h4>🟥 Cartão Vermelho (Evite!)</h4>
+                <p>Evite clicar em links que prometem "brindes imperdíveis" ou "PIX em dobro" em grupos do WhatsApp, mesmo vindo de amigos de confiança.</p>
+              </div>
+              <div class="rule-card rule-safe">
+                <h4>🏆 Golaço (Faça isso!)</h4>
+                <p>Pesquise o nome da promoção no Google antes. Se for verdade, estará sendo divulgado nos jornais famosos e no site oficial da marca, não apenas em correntes.</p>
+              </div>
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- DICA 4 -->
+      <article class="tactic-card">
+        <details>
+          <summary>
+            <div class="summary-left">
+              <span class="card-badge" aria-hidden="true">4</span>
+              <span>Senhas Fortes: Barreira Firme</span>
+            </div>
+            <span class="arrow-icon" aria-hidden="true">▼</span>
+          </summary>
+          <div class="tactic-content">
+            <p>Uma barreira de falta bem montada bloqueia os chutes mais difíceis. Da mesma forma, as suas senhas do banco e das redes sociais devem ser difíceis de adivinhar.</p>
+            
+            <div class="soccer-rule-box">
+              <div class="rule-card rule-danger">
+                <h4>🟥 Cartão Vermelho (Evite!)</h4>
+                <p>Não use senhas óbvias baseadas em datas de aniversário, sequências numéricas (como 123456) ou o nome do seu time de coração puro e simples.</p>
+              </div>
+              <div class="rule-card rule-safe">
+                <h4>🏆 Golaço (Faça isso!)</h4>
+                <p>Misture letras maiúsculas, minúsculas e símbolos. Uma dica excelente é usar uma frase curta como senha, por exemplo: <strong>CafeComPao10#</strong>. É simples de lembrar e muito segura.</p>
+              </div>
+            </div>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- SEÇÃO DE JOGO TREINO (QUIZ INTERATIVO COM PURO CSS) -->
+    <section class="quiz-container" aria-label="Jogo Treino">
+      <div class="quiz-header">
+        <h2 style="color: var(--accent-blue); font-size: 1.5rem; font-weight: 900; margin-bottom: 5px;">🎮 Jogo Treino: Coloque seu Conhecimento em Campo</h2>
+        <p>Responda à questão abaixo e veja se você está pronto para ser campeão!</p>
+      </div>
+
+      <div class="quiz-question">
+        <span aria-hidden="true">🚩</span> <strong>O juiz apitou!</strong> Um contato desconhecido lhe envia uma mensagem com a logomarca da Copa, afirmando que você foi sorteado para receber R$ 5.000, mas precisa clicar em um link para preencher seu CPF e dados bancários. Qual é a jogada correta?
+      </div>
+
+      <!-- Estrutura de Opções com Sibling Selectors para ativação via Rádio -->
+      <input type="radio" id="q1-wrong1" name="quiz1" class="quiz-radio">
+      <label for="q1-wrong1" class="quiz-label">A) Clico logo para não perder a chance de receber esse dinheiro!</label>
+
+      <input type="radio" id="q1-correct" name="quiz1" class="quiz-radio">
+      <label for="q1-correct" class="quiz-label">B) Desconfio na hora e não clico. Promoções assim geralmente são armadilhas.</label>
+
+      <input type="radio" id="q1-wrong2" name="quiz1" class="quiz-radio">
+      <label for="q1-wrong2" class="quiz-label">C) Preencho apenas o meu CPF para ver se é real.</label>
+
+      <!-- Mensagens de Feedback Reveladas Conforme Seleção -->
+      <div class="quiz-feedback feedback-wrong-1">
+        <p style="font-size: 1.2rem; margin-bottom: 8px;">🟥 Impedimento! Cartão Vermelho!</p>
+        <p style="font-weight: normal;">Os golpistas adoram criar falsos sorteios imperdíveis para roubar os dados bancários das pessoas. Bancos e grandes empresas nunca pedem senhas ou dados sigilosos por mensagens de texto.</p>
+      </div>
+
+      <div class="quiz-feedback feedback-correct">
+        <p style="font-size: 1.2rem; margin-bottom: 8px;">🏆 Golaço! Na Gaveta!</p>
+        <p style="font-weight: normal;">Excelente escolha técnica. Prêmios fáceis e urgentes são táticas comuns para enganar usuários. Bloqueie o contato e comemore a defesa invicta de suas informações pessoais!</p>
+      </div>
+
+      <div class="quiz-feedback feedback-wrong-2">
+        <p style="font-size: 1.2rem; margin-bottom: 8px;">🟨 Falta! Cartão Amarelo!</p>
+        <p style="font-weight: normal;">Mesmo enviando "só o CPF", você já está dando informações valiosas para fraudadores realizarem cadastros no seu nome. Nunca insira nenhum dado pessoal em links desconhecidos.</p>
+      </div>
+    </section>
+
+    <!-- CARTÃO AMARELO / ATENÇÃO RÁPIDA -->
+    <section class="quick-support" aria-label="Cartão de Emergência">
+      <div class="support-icon" aria-hidden="true">🟨</div>
+      <div class="support-text">
+        <h3>Teve a Conta Invadida ou Sofreu um Golpe?</h3>
+        <p>Fique calmo! Avise seus parentes imediatamente e ligue direto para a central de atendimento do seu banco para bloquear qualquer transação. Sua segurança emocional também é muito importante.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER DA APLICAÇÃO -->
+    <footer class="footer-app">
+      <p>© 2026 - Guia Criado para a Copa da Segurança Digital.</p>
+      <p>Desenvolvido com carinho para garantir uma internet mais segura e feliz para todos os nossos craques da <strong>Melhor Idade</strong>. 🇧🇷⚽🏆</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
